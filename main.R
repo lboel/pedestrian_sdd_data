@@ -1,6 +1,6 @@
 devtools::install_local("hystReet-master/")
 # Get HYSTREET API TOKEN by view-source:https://hystreet.com/locations/148 search for apiToken get 24 chracters token
-Sys.setenv(HYSTREET_API_TOKEN = "dWfpGRD3aBNocEbZNdLrhRDe")
+Sys.setenv(HYSTREET_API_TOKEN = readChar("apikey", 27))
 library(hystReet)
 
 #Is working?
