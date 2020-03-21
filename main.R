@@ -53,9 +53,7 @@ for (stationid in names(alldata))
 }
 warnings()
 #saveRDS(everything, file = "alldata_earliest_latest_per_station.rds")
-
 everything <- readRDS(file = "rds/alldata_earliest_to_latest_per_station.rds")
-
 
 data_long <- data.frame(
   stationid = NA,
@@ -114,9 +112,16 @@ for (listnames in names(everything))
   }
 }
 
+
+
 #write.csv(data_long,"long_alldata_hystreet.csv")
 #write.csv(incident_data,"incidents_data_hystreet.csv")
 #saveRDS(data_long,"last_data.rds")
+#write.csv(latest,"long_alldata_hystreet.csv", row.names = F)
+latest <- readRDS("rds/last_data.rds")
+missingkrahnstrasse <- c(8.0131, 52.2983)
+latest[which(is.na(latest$lon)),]$lon <- missingkrahnstrasse[1]
+latest[which(is.na(latest$lat)),]$lat <- missingkrahnstrasse[2]
 
-last <- readRDS("rds/last_data.rds")
-write.csv(data_long,"long_alldata_hystreet.csv", row.names = F)
+library(ggmap)
+register_google(key = readChar("apikey", 39))
