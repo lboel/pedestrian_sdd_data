@@ -142,3 +142,5 @@ write.csv(data_long,"long_alldata_hystreet.csv")
 write.csv(incident_data,"incidents_data_hystreet.csv")
 
 #saveRDS(data_long,"last_data.rds")
+last <- readRDS("rds/last_data.rds")
+write.csv(data_long,"long_alldata_hystreet.csv", row.names = F)
