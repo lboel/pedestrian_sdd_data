@@ -23,7 +23,6 @@ for (id in unique(locations$id))
     )
   )
   alldata[[as.character(id)]] <- data
-  
 }
 
 #saveRDS(alldata, file = "hystreet_20_01_01_u_20_03_20_hour.rds")
@@ -50,12 +49,13 @@ for (stationid in names(alldata))
       resolution = "hour"
     )
   )
-  
   everything[[stationid]] <- data
-  
 }
 warnings()
-saveRDS(everything, file = "alldata_earliest_latest_per_station.rds")
+#saveRDS(everything, file = "alldata_earliest_latest_per_station.rds")
+
+everything <- readRDS(file = "rds/alldata_earliest_to_latest_per_station.rds")
+
 
 data_long <- data.frame(
   stationid = NA,
@@ -72,20 +72,15 @@ data_long <- data.frame(
   lat = NA
 )
 
-
-
-data_long <- cbind(data_long, everything$`251`$measurements[1, ])
+data_long <- cbind(data_long, everything[[1]]$measurements[1, ])
 data_long <- data_long[-1, ]
-
 incident_data <-data.frame(stationid=NA, id=NA,name=NA,icon=NA, description=NA,active_from=NA,active_to=NA)
 incident_data <- incident_data[-1,]
 
 for (listnames in names(everything))
 {
   listdata <- everything[[listnames]]
-  
   incdata <- listdata$incidents
-
   if(is.data.frame(incdata))
   {
   incident_data_temp <-data.frame(stationid=listnames, id=incdata$id,name=incdata$name,icon=incdata$icon, description=incdata$description,active_from=incdata$active_from,active_to=incdata$active_to)
@@ -113,34 +108,15 @@ for (listnames in names(everything))
     lon = rep( df[,1], rows),
     lat = rep( df[,2], rows)
     )
-  
   data_long_temp <- cbind(data_long_temp, listdata$measurements)
   print(listnames)
   data_long <- rbind(data_long, data_long_temp)
   }
 }
 
-summary(data_long)
-library(ggmap) 
-
-register_google(key = "AIzaSyDeDD5XnEft1rpc03x2EHw9wTKc2DkRwyE")
-
-data_long$lon <- NA
-data_long$lat <- NA
-
-station_location_id_df <- data.frame(id=NA)
-station
-
-station_location <- as.character(unique(paste0(data_long$name,",",data_long$city)))
-df <- as.data.frame(ggmap::geocode(station_location))
-lon <- df[,1]
-lat <- df[,2]
-
-
-?register_google()
-write.csv(data_long,"long_alldata_hystreet.csv")
-write.csv(incident_data,"incidents_data_hystreet.csv")
-
+#write.csv(data_long,"long_alldata_hystreet.csv")
+#write.csv(incident_data,"incidents_data_hystreet.csv")
 #saveRDS(data_long,"last_data.rds")
+
 last <- readRDS("rds/last_data.rds")
 write.csv(data_long,"long_alldata_hystreet.csv", row.names = F)
